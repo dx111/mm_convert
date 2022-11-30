@@ -19,6 +19,7 @@ for file in files:
         "stage": "test",
         "script":[
             "pip install dist/*",
+            'ln -sf /workspace/cnbox_resource $(dirname "$(pwd)")/cnbox_resource',
             file
         ]
     }
