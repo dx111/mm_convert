@@ -20,7 +20,7 @@ def parse_network(args):
     network = mm.Network()
     if args.framework == "caffe":
         caffe_parser = mm.parser.Parser(mm.ModelKind.kCaffe)
-        assert caffe_parser.parse(network, args.model, args.prototxt).ok()
+        assert caffe_parser.parse(network, args.model, args.proto).ok()
     elif args.framework == "onnx":
         onnx_parser = mm.parser.Parser(mm.ModelKind.kOnnx)
         assert onnx_parser.parse(network, args.model).ok()
@@ -110,10 +110,10 @@ def args_check(args):
     if args.framework == "caffe":
         if args.model is None:
             print_error_and_exit("error: the following arguments are required: --model xxxx.caffemodel") 
-        if args.prototxt is None:
-            print_error_and_exit("error: the following arguments are required: --prototxt xxxx.prototxt")
+        if args.proto is None:
+            print_error_and_exit("error: the following arguments are required: --proto xxxx.prototxt")
         check_exists(args.model)
-        check_exists(args.prototxt)
+        check_exists(args.proto)
 
     if args.framework == "onnx" and args.model is None:
         print_error_and_exit("error: the following arguments are required: --model xxxx.onnx")

@@ -11,7 +11,10 @@ cfg = {
     "build":{
         "stage":".pre",
         "tags":["mlu370-s4"],
-        "script":["python setup.py bdist_wheel"],
+        "script":[
+            "ci/get_resource.sh",
+            "python setup.py bdist_wheel"
+        ],
         "artifacts":{
             "paths":["dist/*.whl"]
         }

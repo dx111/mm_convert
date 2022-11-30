@@ -1,5 +1,6 @@
 mm_convert \
-    --prototxt ../cnbox_resource/models/caffe_yolov3/yolov3_416.prototxt \
+    -f caffe \
+    --proto ../cnbox_resource/models/caffe_yolov3/yolov3_416.prototxt \
     --caffemodel ../cnbox_resource/models/caffe_yolov3/yolov3_416.caffemodel \
     --output_model caffe_yolov3_model \
     --archs mtp_322 mtp_372.41 \

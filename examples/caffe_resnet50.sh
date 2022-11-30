@@ -1,6 +1,6 @@
 mm_convert \
     -f caffe \
-    --prototxt ../cnbox_resource/models/caffe_resnet50/resnet50.prototxt \
+    --proto ../cnbox_resource/models/caffe_resnet50/resnet50.prototxt \
     --model ../cnbox_resource/models/caffe_resnet50/resnet50.caffemodel \
     --output_model caffe_resnet50_model \
     --archs mtp_322 mtp_372.41 \
