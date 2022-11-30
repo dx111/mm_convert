@@ -12,6 +12,7 @@ cfg = {
         "stage":".pre",
         "tags":["mlu370-s4"],
         "script":[
+            'ln -sf /workspace/cnbox_resource $(dirname "$(pwd)")/cnbox_resource',
             "ci/get_resource.sh",
             "python setup.py bdist_wheel"
         ],
