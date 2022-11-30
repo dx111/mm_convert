@@ -6,6 +6,15 @@ cfg = {
     "image": "yellow.hub.cambricon.com/magicmind/release/x86_64/magicmind:0.13.0-x86_64-ubuntu18.04-py_3_7",
     "variables":{
         "GIT_DEPTH": "1"
+    },
+
+    "build":{
+        "stage":".pre",
+        "tags":["mlu370-s4"],
+        "script":["python setup.py bdist_wheel"],
+        "artifacts":{
+            "paths":["dist/*.whl"]
+        }
     }
 }
 

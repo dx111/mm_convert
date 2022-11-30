@@ -9,7 +9,6 @@ gen-jobs:
   artifacts:
     paths:
       - jobs.yml
-      - dist/*.whl
 
 model-test:
   stage: test
