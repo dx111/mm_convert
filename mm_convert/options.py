@@ -139,7 +139,7 @@ calibrate_group.add_argument("--load_data_func", type=str, default = "load_image
 calibrate_group.add_argument("--batch_size", type= int, default=1)
 
 # load_image
-calibrate_group.add_argument("--image_dir", type=str, nargs="+", default= [f"{HERE}/sample_data/imagenet"])
+calibrate_group.add_argument("--image_dir", type=str, nargs="+", default= [f"{HERE}/sample_data/"])
 calibrate_group.add_argument("--image_size", type = str_to_int_tuple, nargs="+")
 calibrate_group.add_argument("--image_color", type=str, nargs="+", default= ["RGB"], metavar="rgb")
 calibrate_group.add_argument("--image_mean", type=str_to_flaot_list, nargs="+", default= [[0.0,0.0,0.0]], metavar="0.0,0.0,0.0")
