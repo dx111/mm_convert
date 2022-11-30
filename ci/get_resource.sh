@@ -50,7 +50,7 @@ do
         for file in ${array[@]}
         do
         wget -N -r -c -nH -np \
-            -P ../../ \
+            -P ../ \
             --cut-dirs=2 \
             --ftp-user=${ftp_user} \
             --ftp-password=${FTP_PASSWORD} \
@@ -63,7 +63,7 @@ done
 
 
 # decompress dataset
-pushd ../../cnbox_resource/dataset
+pushd ../cnbox_resource/dataset
 
 for file in $(ls .)
 do
