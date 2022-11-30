@@ -3,7 +3,7 @@ image: yellow.hub.cambricon.com/magicmind/release/x86_64/magicmind:0.13.0-x86_64
 gen-jobs:
   stage: .pre
   tags: 
-    - edge_zoo_no_chip_28_concurrency
+    - mlu370-s4
   script:
     - python setup.py bdist_wheel
     - python ci/generate_config.py
@@ -14,6 +14,8 @@ gen-jobs:
 
 model-test:
   stage: test
+  tags: 
+    - mlu370-s4
   trigger:
     include:
       - artifact: jobs.yml
