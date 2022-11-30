@@ -19,6 +19,7 @@ for file in files:
         "stage": "test",
         "tags":["mlu370-s4"],
         "script":[
+            "python setup.py bdist_wheel",
             "pip install dist/*",
             'ln -sf /workspace/cnbox_resource $(dirname "$(pwd)")/cnbox_resource',
             file

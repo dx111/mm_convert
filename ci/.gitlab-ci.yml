@@ -5,7 +5,6 @@ gen-jobs:
   tags: 
     - mlu370-s4
   script:
-    - python setup.py bdist_wheel
     - python ci/generate_config.py
   artifacts:
     paths:
