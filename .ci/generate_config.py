@@ -17,6 +17,7 @@ for file in files:
     name = filename.split(".")[0]
     cfg[name]= {
         "stage": "test",
+        "tags":["mlu370-s4"],
         "script":[
             "pip install dist/*",
             'ln -sf /workspace/cnbox_resource $(dirname "$(pwd)")/cnbox_resource',
