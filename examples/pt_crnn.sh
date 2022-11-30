@@ -1,0 +1,14 @@
+mm_convert \
+    --framework pytorch \
+    --model models/pytorch_crnn/crnn-jit.pt \
+    --output_model pt_crnn_model \
+    --archs mtp_372.41 \
+    --input_shapes 1,1,32,100 \
+    --input_as_nhwc true \
+    --insert_bn true \
+    --precision qint8_mixed_float16 \
+    --image_dir sample_data/crnn \
+    --image_color gray \
+    --image_mean 0 \
+    --image_std 255.0 \
+    --image_scale 1.0

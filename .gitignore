@@ -1,0 +1,8 @@
+/models
+*.pyc
+/build
+/dist
+/mm_convert.egg-info
+/mm_convert/sample_data
+/mm_convert/mm_convert.egg-info
+__pycache__/

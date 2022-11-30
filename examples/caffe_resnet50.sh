@@ -1,0 +1,12 @@
+mm_convert \
+    -f caffe \
+    --prototxt ../cnbox_resource/models/caffe_resnet50/resnet50.prototxt \
+    --model ../cnbox_resource/models/caffe_resnet50/resnet50.caffemodel \
+    --output_model caffe_resnet50_model \
+    --archs mtp_322 mtp_372.41 \
+    --input_shapes 1,3,224,224 \
+    --input_as_nhwc true \
+    --insert_bn true \
+    --precision q8 \
+    --image_color bgr \
+    --image_mean 103.939002991,116.778999329,123.680000305
