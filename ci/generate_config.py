@@ -34,6 +34,7 @@ for file in files:
         "tags":["mlu370-s4"],
         "script":[
             "pip install dist/*",
+            'rm -rf $(dirname "$(pwd)")/cnbox_resource',
             'ln -sf /workspace/cnbox_resource $(dirname "$(pwd)")/cnbox_resource',
             file
         ]
