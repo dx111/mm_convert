@@ -14,8 +14,6 @@ gen-jobs:
 
 model-test:
   stage: test
-  tags: 
-    - mlu370-s4
   trigger:
     include:
       - artifact: jobs.yml
