@@ -11,5 +11,5 @@ setup(
             'mm_convert = mm_convert:main',
         ]
     },
-    package_data={'':['sample_data/imagenet/*.JPEG']}
+    package_data={'':['sample_data/*']}
 )

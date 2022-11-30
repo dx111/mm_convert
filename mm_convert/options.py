@@ -60,7 +60,7 @@ parser.add_argument("--input_shapes",type=str_to_int_list, nargs="+")
 
 # caffe
 caffe_param_group = parser.add_argument_group("param for caffe framework")
-caffe_param_group.add_argument("--prototxt", type=str)
+caffe_param_group.add_argument("--proto", type=str)
 
 # pytorch
 pt_param_group = parser.add_argument_group("param for pytorch framework")

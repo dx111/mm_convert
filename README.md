@@ -1,25 +1,89 @@
 # convert_to_mm
+- [convert\_to\_mm](#convert_to_mm)
+  - [安装](#安装)
+  - [快速开始](#快速开始)
+  - [模型性能优化](#模型性能优化)
+    - [模型固定shape](#模型固定shape)
+  - [mm\_convert参数介绍](#mm_convert参数介绍)
+    - [通用参数](#通用参数)
+      - [-f(--framework)](#-f--framework)
+      - [-m(--model)](#-m--model)
+      - [-o(--output\_model)](#-o--output_model)
+      - [--input\_shapes](#--input_shapes)
 
-# 快速开始
-scripts目录下，是生成模型的脚本，tests目录下，是测试模型精度的程序，以bert为例，生成模型并测试精度
+
+## 安装
 ```bash
-# 生成模型
-./scripts/pt_bert.sh
-# 测试精度
-python tests/pt_bert.py
+pip install mm_convert
 ```
 
-convert_to_mm用于生成mm模型，免去复杂的编码环节，只需配置参数即可生成模型，一个简单的例子
+## 快速开始
+caffe模型转mm
 ```bash
-python convert_to_mm.py \
-    --framework caffe \
-    --proto ../cnbox_resource/models/caffe_resnet50/resnet50.prototxt \
-    --model ../cnbox_resource/models/caffe_resnet50/resnet50.caffemodel \
-    --output_model caffe_resnet50_model
+mm_convert \
+--framework caffe \
+--proto resnet50.prototxt \
+--model resnet50.caffemodel \
+--output_model caffe_resnet50_model
 ```
-通过此参数生成caffe resnet50的模型，性能不是最佳的，我们可以设置参数，对模型进行优化
+onnx模型转mm
+```bash
+mm_convert \
+-f onnx \
+--model densenet-12.onnx \
+--output_model onnx_densenet121_model
+```
+pytorch模型转mm
+```bash
+mm_convert \
+-f pt \
+--model resnet50_jit.pt \
+--output_model pt_resnet50_model
+```
+tensorflow pb模型转mm
+```bash
+mm_convert \
+-f tf \
+--model resnet50_v1.pb \
+--output_model pt_resnet50_model --tf_graphdef_inputs input:0 \
+--tf_graphdef_outputs resnet_v1_50/predictions/Softmax:0
+```
 
-# archs
+## 模型性能优化
+### 模型固定shape
+
+
+## mm_convert参数介绍
+### 通用参数
+#### -f(--framework)
+原模型的框架，caffe，onnx，pytorch，tensorflow，pytorch可以使用简写pt，tensorflow可以使用简写tf
+example:
+```bash
+--framework caffe
+
+-f onnx
+
+-f pt
+
+-f tf
+```
+
+#### -m(--model)
+原模型的模型文件，对于不同的框架，指代的文件不同,对于caffe，还需要指定--proto
+```bash
+# for caffe
+--model resnet50.caffemodel --proto resnet50.prototxt
+# for onnx
+--model resnet50.onnx
+# for pytorch
+-m resnet50_jit.pt
+# for tensorflow
+-m resnet50.pb
+```
+#### -o(--output_model)
+#### --input_shapes
+
+<!-- ### archs
 通过指定archs，指定生成mlu370或者3226的模型，并指定多核优化,使用方法     
 指定生成3226的模型
 ```bash
@@ -42,7 +106,7 @@ python convert_to_mm.py \
 --archs mtp_322 mtp_372:6,8
 ```
 对于3226(但核)，无须设置多核优化，对于370-s4(6核)，建议设置mtp_372:6，对于370-s4(8核)，建议设置mtp_372:8
-# 设置网络的input_shape
+### input_shapes
 设置网络input_shape，会自动设置网络的输入shape不可变，大幅提升网络的性能，如需生成可变模型，请设置graph_shape_mutable=true    
 
 指定输入1的shape是1,3,224,224
@@ -61,7 +125,7 @@ python convert_to_mm.py \
 --graph_shape_mutable true
 ```
 
-# 设置精度和量化
+### 设置精度和量化
 
 | 精度 | 介绍 |
 | ------ | ------ |
@@ -115,7 +179,7 @@ python convert_to_mm.py \
 --image_scale 1.0,1.0,1.0 1/255.0,1/255.0,1/255.0
 ```
 
-# 改变输入和输出布局
+### 改变输入和输出布局
 图片加载后一般的数据格式是(h,w,c)，增加batch后是(n,h,w,c),对于网络的输入是(n,c,h,w),图片需要transpose(n,h,w,c)->(n,c,h,w)后，才能进行推理，通过设置参数input_as_nhwc，将网络的输入转变为nhwc后，可免去图片的transpose      
 
 将输入1从nchw改成nhwc
@@ -133,7 +197,7 @@ python convert_to_mm.py \
 --output_as_nhwc false true
 ```
 
-# insert_bn
+### insert_bn
 对于首层是conv的网络，可以设置insert_bn，代替预处理中的归一化操作，设置insert_bn之后，无须再做减均值除标准差的归一化操作，输入的数据类型也会变成uint8(fp32->uint8,减少3/4的数据量)，注意此参数的开启依赖与正确的设置了 image_mean,image_std,image_scale参数，此参数在精度和量化校准提及，不在赘述    
 输入1开启insert_bn
 ```bash
@@ -145,7 +209,7 @@ python convert_to_mm.py \
 --insert_bn false true \
 ```
 
-# 添加目标检测大算子
+### 添加目标检测大算子
 对于yolo ssd 之类的网络，使用大算子代替原生的检测层，可大幅提升性能    
 yolov3 检测层的配置，
 ```bash
@@ -162,14 +226,14 @@ yolov5 配置如下
 ```
 注意事项：    
 默认情况下，会在网络的最后增加目标检测算子，因此需要去掉网络原始的检测层，仅保留网络最后的特征图   
-##### 1.caffe 模型    
+1. caffe 模型    
 caffe 模型修改prototxt文件，去掉DetectionOutput层即可    
-##### 2.tensorflow pb模型
+2. tensorflow pb模型
 tensorflow的pb格式模型，可以指定参数--tf_graphdef_outputs conv_lbbox/Conv2D:0 conv_mbbox/Conv2D:0 conv_sbbox/Conv2D:0，指定网络的输出为卷积后的特征图，name需要根据情况更改
-##### 3.pytorch 模型
+3. pytorch 模型
 pytorch模型需要在jit.trace模型的时候，在代码中修改，将检测层的的输入直接return，不经过检测层
 
-##### detect 参数
+#### detect 参数
 1.detect_add_permute_node    
 detect层需要nhwc的输入，当特征图是nchw时(caffe, pytorch),需要添加此参数，将特征图permute为nhwc    
 
@@ -194,14 +258,14 @@ yolov3的anchor值设置,此值为默认值
 7.detect_image_shape    
 目标检测图片的尺寸,未设置会根据网络的输入0和参数image_size进行推到，无法推导则设置为416,416
 
-# bgr模型转rgb模型
+### bgr模型转rgb模型
 对于一些已经训练好的模型，训练时采用的bgr或者rgb的数据，推理时图片需要对图片，进行rbg2bgr或者bgr2rgb的转换，此转换浪费了时间，可对模型进行更改，交换权值中的B,R通道，使其接收另一种颜色空间的图片
 ```bash
 --model_swapBR true
 ```
 
-# 调试参数
+### 调试参数
 保存模型build期间，图的结构
 ```bash
 --print_ir true
-```
+``` -->
