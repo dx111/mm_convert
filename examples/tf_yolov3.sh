@@ -8,7 +8,6 @@ mm_convert \
     --input_shapes 1,416,416,3 \
     --insert_bn true \
     --precision qint8_mixed_float16 \
-    --image_dir sample_data/coco \
     --image_color rgb \
     --image_std 255.0 255.0 255.0 \
     --add_detect true \

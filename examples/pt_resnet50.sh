@@ -7,7 +7,6 @@ mm_convert \
     --input_as_nhwc true \
     --insert_bn true \
     --precision qint8_mixed_float16 \
-    --image_dir sample_data/imagenet \
     --image_color rgb \
     --image_mean 0.485,0.456,0.406 \
     --image_std 0.229,0.224,0.225 \

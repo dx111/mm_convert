@@ -7,7 +7,6 @@ mm_convert \
     --input_as_nhwc true \
     --insert_bn true \
     --precision qint8_mixed_float16 \
-    --image_dir sample_data/voc \
     --image_color rgb \
     --image_std 255.0 255.0 255.0 \
     --add_detect  true \

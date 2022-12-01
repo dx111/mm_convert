@@ -8,5 +8,4 @@ mm_convert \
     --archs mtp_322 mtp_372.41 \
     --input_shapes 1,513,513,3 \
     --precision qint8_mixed_float16 \
-    --image_dir sample_data/voc \
     --image_color rgb \
