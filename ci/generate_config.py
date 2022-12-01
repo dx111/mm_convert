@@ -12,6 +12,8 @@ cfg = {
         "stage":".pre",
         "tags":["mlu370-s4"],
         "script":[
+            'rm -rf $(dirname "$(pwd)")/cnbox_resource',
+            'ln -sf /workspace/cnbox_resource $(dirname "$(pwd)")/cnbox_resource',
             "ci/get_resource.sh",
             "python setup.py bdist_wheel"
         ],
@@ -32,6 +34,7 @@ for file in files:
         "tags":["mlu370-s4"],
         "script":[
             "pip install dist/*",
+            'rm -rf $(dirname "$(pwd)")/cnbox_resource',
             'ln -sf /workspace/cnbox_resource $(dirname "$(pwd)")/cnbox_resource',
             file
         ]
