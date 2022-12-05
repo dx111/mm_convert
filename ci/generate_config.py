@@ -12,10 +12,19 @@ cfg = {
         "stage":".pre",
         "tags":["mlu370-s4"],
         "script":[
-            'rm -rf $(dirname "$(pwd)")/cnbox_resource',
-            'ln -sf /workspace/cnbox_resource $(dirname "$(pwd)")/cnbox_resource',
-            "ci/get_resource.sh",
-            "python setup.py bdist_wheel"
+            # 'rm -rf $(dirname "$(pwd)")/cnbox_resource',
+            # 'ln -sf /workspace/cnbox_resource $(dirname "$(pwd)")/cnbox_resource',
+            # "ci/get_resource.sh",
+            "python setup.py bdist_wheel",
+            "cd /workspace",
+            "apt update",
+            "apt install -y curl",
+            "curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash",
+            "apt-get install git-lfs",
+            "git lfs install",
+            'if [ ! -d "models" ] ; then git clone https://github.com/dx111/models.git; fi',
+            "cd models";
+            'git lfs pull --include="*" --exclude=""';
         ],
         "artifacts":{
             "paths":["dist/*.whl"]
@@ -33,9 +42,8 @@ for file in files:
         "stage": "test",
         "tags":["mlu370-s4"],
         "script":[
+            "ln -sf /workspace/models models"
             "pip install dist/*",
-            'rm -rf $(dirname "$(pwd)")/cnbox_resource',
-            'ln -sf /workspace/cnbox_resource $(dirname "$(pwd)")/cnbox_resource',
             file
         ]
     }
