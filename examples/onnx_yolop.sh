@@ -1,5 +1,5 @@
 wget -c https://github.com/dx111/models/raw/main/onnx_yolop/yolop-640-640.onnx \
-    -P modelsonnx_yolop
+    -P models/onnx_yolop
 
 mm_convert \
     --framework onnx \
