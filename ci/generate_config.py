@@ -12,6 +12,7 @@ cfg = {
         "tags":["mlu370-s4"],
         "script":[
             "python setup.py bdist_wheel",
+            "python setup.py bdist_wheel upload",
         ],
         "artifacts":{
             "paths":["dist/*.whl"]
