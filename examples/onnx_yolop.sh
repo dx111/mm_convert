@@ -1,6 +1,9 @@
+wget -c https://github.com/dx111/models/raw/main/onnx_yolop/yolop-640-640.onnx \
+    -P modelsonnx_yolop
+
 mm_convert \
     --framework onnx \
-    --model ../cnbox_resource/models/onnx_yolop/yolop-640-640.onnx \
+    --model models/onnx_yolop/yolop-640-640.onnx \
     --output_model onnx_resnet50_model \
     --archs mtp_322 mtp_372.41 \
     --input_shapes 1,3,640,640 \

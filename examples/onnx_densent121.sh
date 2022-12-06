@@ -1,6 +1,9 @@
+wget -c https://github.com/dx111/models/raw/main/onnx_densent121/densenet-12.onnx \
+    -P models/onnx_densent121
+
 mm_convert \
     -f onnx \
-    -m ../cnbox_resource/models/onnx_densent121/densenet-12.onnx \
+    -m models/onnx_densent121/densenet-12.onnx \
     -o onnx_densenet121_model \
     --archs mtp_372.41 \
     --input_shapes 1,3,224,224 \

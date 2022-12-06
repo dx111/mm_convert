@@ -1,7 +1,13 @@
+wget -c https://github.com/dx111/models/raw/main/caffe_resnet50/ResNet-50-deploy.prototxt \
+    -P models/caffe_resnet50
+
+wget -c https://github.com/dx111/models/raw/main/caffe_resnet50/ResNet-50-model.caffemodel \
+    -P models/caffe_resnet50
+
 mm_convert \
     -f caffe \
-    --proto ../cnbox_resource/models/caffe_resnet50/resnet50.prototxt \
-    --model ../cnbox_resource/models/caffe_resnet50/resnet50.caffemodel \
+    --proto models/caffe_resnet50/ResNet-50-deploy.prototxt \
+    --model models/caffe_resnet50/ResNet-50-model.caffemodel \
     --output_model caffe_resnet50_model \
     --archs mtp_322 mtp_372.41 \
     --input_shapes 1,3,224,224 \

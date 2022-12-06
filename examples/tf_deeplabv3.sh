@@ -1,6 +1,9 @@
+wget -c https://github.com/dx111/models/raw/main/tf_deeplabv3/frozen_inference_graph.pb \
+    -P models/tf_deeplabv3
+
 mm_convert \
     --framework tensorflow \
-    --model ../cnbox_resource/models/tf_deeplabv3/frozen_inference_graph.pb \
+    --model /models/tf_deeplabv3/frozen_inference_graph.pb \
     --tf_model_type tf-graphdef-file \
     --tf_graphdef_inputs ImageTensor:0 \
     --tf_graphdef_outputs SemanticPredictions:0 \

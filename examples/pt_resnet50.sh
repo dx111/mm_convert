@@ -1,6 +1,9 @@
+wget -c https://github.com/dx111/models/raw/main/pytorch_resnet50/py3.7.9_torch1.6.0_resnet50.pt \
+    -P models/pytorch_resnet50
+
 mm_convert \
     --framework pytorch \
-    --model ../cnbox_resource/models/pytorch_resnet50/py3.7.9_torch1.6.0_resnet50.pt \
+    --model models/pytorch_resnet50/py3.7.9_torch1.6.0_resnet50.pt \
     --output_model pt_resnet50_model \
     --archs mtp_372.41 \
     --input_shapes 1,3,224,224 \

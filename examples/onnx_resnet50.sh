@@ -1,6 +1,9 @@
+wget -c https://github.com/dx111/models/raw/main/onnx_resnet/resnet50-v1-7.onnx \
+    -P models/onnx_resnet
+
 mm_convert \
     -f onnx \
-    -m ../../cnbox_resource/models/onnx_resnet50/resnet50-v1-7.onnx \
+    -m models/onnx_resnet/resnet50-v1-7.onnx \
     -o onnx_resnet50_model \
     --archs mtp_372.41 \
     --input_shapes 1,3,224,224 \

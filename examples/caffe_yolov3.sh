@@ -1,7 +1,13 @@
+wget -c https://github.com/dx111/models/raw/main/caffe_yolov3/yolov3_416.caffemodel \
+    -P models/caffe_yolov3
+
+wget -c https://github.com/dx111/models/raw/main/caffe_yolov3/yolov3_416.prototxt \
+    -P models/caffe_yolov3
+
 mm_convert \
     -f caffe \
-    --proto ../cnbox_resource/models/caffe_yolov3/yolov3_416.prototxt \
-    --caffemodel ../cnbox_resource/models/caffe_yolov3/yolov3_416.caffemodel \
+    --proto models/caffe_yolov3/yolov3_416.prototxt \
+    --caffemodel models/caffe_yolov3/yolov3_416.caffemodel \
     --output_model caffe_yolov3_model \
     --archs mtp_322 mtp_372.41 \
     --input_shapes 1,3,416,416 \
