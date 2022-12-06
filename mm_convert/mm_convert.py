@@ -1,11 +1,6 @@
-from enum import EnumMeta
-from glob import glob
 import os
-from turtle import width
 import numpy as np
-import cv2
 import json
-import numpy as np
 import magicmind.python.runtime as mm
 import magicmind.python.runtime.parser
 from magicmind.python.common.types import get_datatype_by_numpy

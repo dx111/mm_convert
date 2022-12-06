@@ -1,7 +1,5 @@
 import os
 import argparse
-from numpy import append
-from typing import List
 import magicmind.python.runtime as mm
 
 HERE = os.path.split(os.path.abspath(__file__))[0]
