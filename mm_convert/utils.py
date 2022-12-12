@@ -1,4 +1,5 @@
 import os
+import pickle
 import numpy as np
 import magicmind.python.runtime as mm
 from magicmind.python.common.types import get_datatype_by_numpy
@@ -103,3 +104,15 @@ class Register(dict):
     
     def items(self):
         return self._dict.items()
+
+class Record:
+    def __init__(self):
+        self.data_dict = {}
+
+    def add(self, *datas):
+        for i, x in enumerate(datas):
+            self.data_dict.setdefault(f"input{i}", []).append(x)
+            
+    def save(self, name = "calibrate_data"):
+        pickle.dump(self.data_dict, open(name, "wb"))
+

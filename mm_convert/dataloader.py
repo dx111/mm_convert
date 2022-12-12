@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 from glob import glob
+import pickle
 import magicmind.python.runtime as mm
 from .utils import CalibData
 from .utils import Register
@@ -9,6 +10,17 @@ from .utils import get_obj
 from .utils import print_error_and_exit
 
 dataload_func = Register()
+
+@dataload_func
+def load_calibrate_data(args):
+    name = "calibrate_data"
+    with open(name, "rb") as f:
+       calibrate_data = pickle.load(f)
+       calibrate_data = [calibrate_data[k] for k in calibrate_data.keys()]
+    if len(calibrate_data) == 1:
+        return CalibData(calibrate_data[0])
+    else:
+        return [CalibData(x) for x in calibrate_data]
 
 @dataload_func
 def load_image(args):
