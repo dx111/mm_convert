@@ -1,6 +1,9 @@
+wget -c https://github.com/dx111/models/raw/main/pytorch_yolov5/yolov5m_v5.pt \
+    -p models/pytorch_yolov5
+
 mm_convert \
     --framework pytorch \
-    --model ../cnbox_resource/models/pytorch_yolov5m/yolov5m_v5.pt \
+    --model models/pytorch_yolov5/yolov5m_v5.pt\
     --output_model pytorch_yolov5m_v5_model \
     --archs mtp_322 mtp_372.41 \
     --input_shapes 1,3,640,640 \

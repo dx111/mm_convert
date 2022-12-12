@@ -1,6 +1,9 @@
+wget -c https://github.com/dx111/models/raw/main/tf_yolov3/yolov3.pb \
+    -P models/tf_yolov3
+
 mm_convert \
     --framework tensorflow \
-    --model ../cnbox_resource/models/tf_yolov3/yolov3.pb \
+    --model models/tf_yolov3/yolov3.pb \
     --output_model tf_yolov3_model \
     --archs mtp_372.41 \
     --tf_graphdef_inputs  input/input_data \

@@ -60,11 +60,8 @@ mm_convert \
 example:
 ```bash
 --framework caffe
-
 -f onnx
-
 -f pt
-
 -f tf
 ```
 
