@@ -144,10 +144,13 @@ calibrate_group.add_argument("--image_mean", type=str_to_flaot_list, nargs="+", 
 calibrate_group.add_argument("--image_std", type=str_to_flaot_list, nargs="+", default=[[1.0,1.0,1.0]], metavar="1.0,1.0,1.0")
 calibrate_group.add_argument("--image_scale", type=str_to_flaot_list, nargs= "+", default=[[1.0,1.0,1.0]], metavar="1.0,1.0,1.0")
 
-#load_squad
+# load_squad
 calibrate_group.add_argument("--squad_max_seq_length", type=int, default= 128)
 calibrate_group.add_argument("--squad_doc_stride", type=int, default = 128 )
 calibrate_group.add_argument("--squad_max_query_length", type=int, default=64)
+
+# calibrate_data
+calibrate_group.add_argument("--calibrate_data_file", type=str, default="calibrate_data")
 
 # add detect
 def str_to_detect_algo(string: str):

@@ -3,13 +3,11 @@ import numpy as np
 import json
 import magicmind.python.runtime as mm
 import magicmind.python.runtime.parser
-from magicmind.python.common.types import get_datatype_by_numpy
 from .utils import Calibrator
 from .utils import print_error_and_exit
 from .options import parser
 from .adapter_model import adapt_func
 from .dataloader import dataload_func
-
 
 def parse_network(args):
     network = mm.Network()

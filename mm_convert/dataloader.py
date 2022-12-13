@@ -4,6 +4,7 @@ import numpy as np
 from glob import glob
 import pickle
 import magicmind.python.runtime as mm
+from magicmind.python.common.types import get_numpy_dtype_by_datatype
 from .utils import CalibData
 from .utils import Register
 from .utils import get_obj
@@ -13,14 +14,31 @@ dataload_func = Register()
 
 @dataload_func
 def load_calibrate_data(args):
-    name = "calibrate_data"
-    with open(name, "rb") as f:
+    with open(args.calibrate_data_file, "rb") as f:
        calibrate_data = pickle.load(f)
-       calibrate_data = [calibrate_data[k] for k in calibrate_data.keys()]
-    if len(calibrate_data) == 1:
-        return CalibData(calibrate_data[0])
+    data = [calibrate_data[k] for k in calibrate_data.keys()]
+    batch_size = args.batch_size
+    batch_data_list = []
+    input_types = []
+    for i in range(args.__network__.get_input_count()):
+        type = args.__network__.get_input(i).get_data_type()
+        np_type = get_numpy_dtype_by_datatype(type)
+        input_types.append(np_type)
+    for i in range(len(data)):
+        batch_data = []
+        tmp_data = []
+        for j in range(len(data[i])):
+            tmp_data.append(data[i][j])
+            if len(tmp_data) == batch_size:
+                new_data = np.concatenate(tmp_data, axis=0).astype(input_types[i])
+                batch_data.append(new_data)
+                tmp_data = []
+        batch_data_list.append(batch_data)
+
+    if len(batch_data_list) == 1:
+        return CalibData(batch_data_list[0])
     else:
-        return [CalibData(x) for x in calibrate_data]
+        return [CalibData(x) for x in batch_data_list]
 
 @dataload_func
 def load_image(args):

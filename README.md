@@ -6,10 +6,10 @@
     - [模型固定shape](#模型固定shape)
   - [mm\_convert参数介绍](#mm_convert参数介绍)
     - [通用参数](#通用参数)
-      - [-f(--framework)](#-f--framework)
-      - [-m(--model)](#-m--model)
-      - [-o(--output\_model)](#-o--output_model)
-      - [--input\_shapes](#--input_shapes)
+      - [-f(--framework) 原模型框架](#-f--framework-原模型框架)
+      - [-m(--model) 原模型](#-m--model-原模型)
+      - [-o(--output\_model) 输出的mm模型名](#-o--output_model-输出的mm模型名)
+      - [--input\_shapes 输出的shape](#--input_shapes-输出的shape)
 
 
 ## 安装
@@ -45,7 +45,8 @@ tensorflow pb模型转mm
 mm_convert \
 -f tf \
 --model resnet50_v1.pb \
---output_model pt_resnet50_model --tf_graphdef_inputs input:0 \
+--output_model pt_resnet50_model \
+--tf_graphdef_inputs input:0 \
 --tf_graphdef_outputs resnet_v1_50/predictions/Softmax:0
 ```
 
@@ -55,7 +56,7 @@ mm_convert \
 
 ## mm_convert参数介绍
 ### 通用参数
-#### -f(--framework)
+#### -f(--framework) 原模型框架
 原模型的框架，caffe，onnx，pytorch，tensorflow，pytorch可以使用简写pt，tensorflow可以使用简写tf
 example:
 ```bash
@@ -65,7 +66,7 @@ example:
 -f tf
 ```
 
-#### -m(--model)
+#### -m(--model) 原模型
 原模型的模型文件，对于不同的框架，指代的文件不同,对于caffe，还需要指定--proto
 ```bash
 # for caffe
@@ -77,8 +78,9 @@ example:
 # for tensorflow
 -m resnet50.pb
 ```
-#### -o(--output_model)
-#### --input_shapes
+#### -o(--output_model) 输出的mm模型名
+#### --input_shapes 输出的shape
+
 
 <!-- ### archs
 通过指定archs，指定生成mlu370或者3226的模型，并指定多核优化,使用方法     
