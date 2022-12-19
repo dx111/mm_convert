@@ -48,35 +48,6 @@ def str_to_framework(string:str):
     else:
         raise BaseException(f"invalid framework option {string}")
     
-parser = argparse.ArgumentParser()
-
-# framework
-parser.add_argument("-f","--framework",type=str, required= True)
-parser.add_argument("-m","--model", type=str)
-parser.add_argument("-o","--output_model",type=str)
-parser.add_argument("--input_shapes",type=str_to_int_list, nargs="+")
-
-# caffe
-caffe_param_group = parser.add_argument_group("param for caffe framework")
-caffe_param_group.add_argument("--proto", type=str)
-
-# pytorch
-pt_param_group = parser.add_argument_group("param for pytorch framework")
-pt_param_group.add_argument("--pytorch_input_dtypes", type= str_to_mm_dtype ,nargs = "+" , default= [mm.DataType.FLOAT32])
-
-# tensorflow
-tf_param_group = parser.add_argument_group("param for tf framework")
-tf_param_group.add_argument("--tf_infer_shape",type=str_to_bool , default= False)
-tf_param_group.add_argument("--tf_model_type", type=str,choices=["tf-graphdef-file", "tf-savedmodel-v1-dir"], default="tf-graphdef-file")
-# pb
-tf_param_group.add_argument("--tf_graphdef_inputs", type=str, nargs="+")
-tf_param_group.add_argument("--tf_graphdef_outputs", type=str, nargs="+")
-# saved_model
-tf_param_group.add_argument("--tf_savedmodel_tags", type=str,default= ["serve"], nargs="+")
-tf_param_group.add_argument("--tf_savedmodel_exported_names",default =["serving_default"], type=str, nargs="+")
-tf_param_group.add_argument("--tf_savedmodel_main_func",default ="serving_default", type=str)
-
-
 def str_to_arch(string: str):
     value = string.split(":")
     if len(value) == 2:
@@ -108,12 +79,58 @@ str_to_precision_dict = {
     "f32":"force_float32"
 }
 
-
 def str_to_precision(string: str):
     if string in str_to_precision_dict.keys():
         return str_to_precision_dict[string]
     else:
         raise BaseException(f"failed to paser precision, value must in {str_to_precision_dict.keys()}")
+    
+# add detect
+def str_to_detect_algo(string: str):
+    if string.lower() == "yolov2":
+        return mm.IDetectionOutputAlgo.YOLOV2
+    elif string.lower() == "yolov3":
+        return mm.IDetectionOutputAlgo.YOLOV3
+    elif string.lower() == "yolov4":
+        return mm.IDetectionOutputAlgo.YOLOV4
+    elif string.lower() == "yolov5":
+        return mm.IDetectionOutputAlgo.YOLOV5
+    elif string.lower() == "fasterrcnn":
+        return mm.IDetectionOutputAlgo.FASTERRCNN
+    elif string.lower() == "ssd":
+        return mm.IDetectionOutputAlgo.SSD
+    elif string.lower() == "refinedet":
+        return mm.IDetectionOutputAlgo.REFINEDET
+    else:
+        raise BaseException("unsupport IDetectionOutputAlgo", string)    
+
+parser = argparse.ArgumentParser()
+
+# framework
+parser.add_argument("-f","--framework",type=str, required = True , metavar="caffe,pytorch,onnx,tensorflow,pytorch")
+parser.add_argument("-m","--model", type=str)
+parser.add_argument("-o","--output_model",type=str)
+parser.add_argument("--input_shapes",type=str_to_int_list, nargs="+")
+
+# caffe
+caffe_param_group = parser.add_argument_group("param for caffe framework")
+caffe_param_group.add_argument("--proto", type=str)
+
+# pytorch
+pt_param_group = parser.add_argument_group("param for pytorch framework")
+pt_param_group.add_argument("--pytorch_input_dtypes", type= str_to_mm_dtype ,nargs = "+" , default= [mm.DataType.FLOAT32])
+
+# tensorflow
+tf_param_group = parser.add_argument_group("param for tf framework")
+tf_param_group.add_argument("--tf_infer_shape",type=str_to_bool , default= False)
+tf_param_group.add_argument("--tf_model_type", type=str,choices=["tf-graphdef-file", "tf-savedmodel-v1-dir"], default="tf-graphdef-file")
+# pb
+tf_param_group.add_argument("--tf_graphdef_inputs", type=str, nargs="+")
+tf_param_group.add_argument("--tf_graphdef_outputs", type=str, nargs="+")
+# saved_model
+tf_param_group.add_argument("--tf_savedmodel_tags", type=str,default= ["serve"], nargs="+")
+tf_param_group.add_argument("--tf_savedmodel_exported_names",default =["serving_default"], type=str, nargs="+")
+tf_param_group.add_argument("--tf_savedmodel_main_func",default ="serving_default", type=str)
 
 # build_config
 build_config_group = parser.add_argument_group("param for build_config")
@@ -152,25 +169,7 @@ calibrate_group.add_argument("--squad_max_query_length", type=int, default=64)
 # calibrate_data
 calibrate_group.add_argument("--calibrate_data_file", type=str, default="calibrate_data")
 
-# add detect
-def str_to_detect_algo(string: str):
-    if string.lower() == "yolov2":
-        return mm.IDetectionOutputAlgo.YOLOV2
-    elif string.lower() == "yolov3":
-        return mm.IDetectionOutputAlgo.YOLOV3
-    elif string.lower() == "yolov4":
-        return mm.IDetectionOutputAlgo.YOLOV4
-    elif string.lower() == "yolov5":
-        return mm.IDetectionOutputAlgo.YOLOV5
-    elif string.lower() == "fasterrcnn":
-        return mm.IDetectionOutputAlgo.FASTERRCNN
-    elif string.lower() == "ssd":
-        return mm.IDetectionOutputAlgo.SSD
-    elif string.lower() == "refinedet":
-        return mm.IDetectionOutputAlgo.REFINEDET
-    else:
-        raise BaseException("unsupport IDetectionOutputAlgo", string)
-
+# detect_param 
 detect_param = parser.add_argument_group("param for add detectionout node param")
 detect_param.add_argument("--add_detect", type= str_to_bool, default= False)
 detect_param.add_argument("--detect_add_permute_node", type= str_to_bool, default= True)
