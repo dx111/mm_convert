@@ -8,7 +8,7 @@ mm_convert \
     --tf_graphdef_inputs ImageTensor:0 \
     --tf_graphdef_outputs SemanticPredictions:0 \
     --output_model tensorflow_deeplabv3p_model \
-    --archs mtp_322 mtp_372.41 \
+    --archs tp_322 mtp_372.41 \
     --input_shapes 1,513,513,3 \
     --precision qint8_mixed_float16 \
     --image_color rgb \

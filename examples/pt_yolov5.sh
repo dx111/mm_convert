@@ -5,7 +5,7 @@ mm_convert \
     --framework pytorch \
     --model models/pytorch_yolov5/yolov5m_v5.pt\
     --output_model pytorch_yolov5m_v5_model \
-    --archs mtp_322 mtp_372.41 \
+    --archs tp_322 mtp_372.41 \
     --input_shapes 1,3,640,640 \
     --input_as_nhwc true \
     --insert_bn true \

@@ -5,7 +5,7 @@ mm_convert \
     --framework onnx \
     --model models/onnx_yolop/yolop-640-640.onnx \
     --output_model onnx_resnet50_model \
-    --archs mtp_322 mtp_372.41 \
+    --archs tp_322 mtp_372.41 \
     --input_shapes 1,3,640,640 \
     --input_as_nhwc true \
     --insert_bn true \
