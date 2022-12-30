@@ -173,7 +173,7 @@ calibrate_group.add_argument("--calibrate_data_file", type=str, default="calibra
 detect_param = parser.add_argument_group("param for add detectionout node param")
 detect_param.add_argument("--add_detect", type= str_to_bool, default= False)
 detect_param.add_argument("--detect_add_permute_node", type= str_to_bool, default= True)
-detect_param.add_argument("--detect_order", type= str_to_int_list, default=[0, 1, 2], metavar="0,1,2")
+# detect_param.add_argument("--detect_order", type= str_to_int_list, default=[0, 1, 2], metavar="0,1,2")
 detect_param.add_argument("--detect_perms", type= str_to_int_list, default=[0, 2, 3, 1], metavar= "0,2,3,1")
 detect_param.add_argument("--detect_bias", type= str_to_int_list, default=[116, 90, 156, 198, 373, 326, 30, 61, 62, 45, 59, 119, 10, 13, 16, 30, 33, 23], metavar="116,90,156,198,373,326,30,61,62,45,59,119,10,13,16,30,33,23")
 detect_param.add_argument("--detect_algo", type= str_to_detect_algo, default= mm.IDetectionOutputAlgo.YOLOV3)

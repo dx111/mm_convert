@@ -11,4 +11,5 @@ mm_convert \
     --image_std 255.0 255.0 255.0 \
     --add_detect  true \
     --detect_bias 116,90,156,198,373,326,30,61,62,45,59,119,10,13,16,30,33,23 \
-    --detect_algo yolov3 
+    --detect_algo yolov3 \
+    --detect_image_shape 416,416

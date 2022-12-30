@@ -16,5 +16,6 @@ mm_convert \
     --precision q8 \
     --image_color bgr \
     --image_std 1/0.00392,1/0.00392,1/0.00392 \
-    --add_detect true
+    --add_detect true \
+    --detect_image_shape 416,416
 

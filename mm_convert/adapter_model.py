@@ -3,12 +3,73 @@ import magicmind.python.runtime as mm
 from .utils import Register
 
 adapt_func = Register()
+    
+def find_all_paths(network, graph, start, end, path=[]):
+    path = path + [start]
+    if start == end:
+        return [path]
+    if start not in graph:
+        return []
+
+    paths = []
+    for node in graph[start]:
+        if network.find_node_by_name(node).get_node_type() == "IConvNode":
+            continue
+        if node not in path:            
+            newpaths = find_all_paths(network, graph, node, end, path)
+            for newpath in newpaths:
+                if newpath != []:
+                    paths.append(newpath) 
+    return paths
+    
+    
+def find_conv_feat(network):    
+    graph = {}
+    for node in network.get_all_nodes_in_network():
+        name = node.get_node_name()
+        output_tensor = [node.get_output(i) for i in range(node.get_output_count())]
+        nodes = []
+        for tensor in output_tensor:
+            for node in tensor.get_consumers():
+                nodes.append(node.get_node_name())
+        graph[name] = nodes
+    
+    network_output_tensor = [network.get_output(i) for i in range(network.get_output_count())]
+    network_output_node_name = []
+    for tensor in network_output_tensor:
+        network_output_node_name.append(tensor.get_producer().get_node_name())
+    convnode_set = set()
+    for node in network.get_all_nodes_in_network():
+        if node.get_node_type() == "IConvNode":
+            name = node.get_node_name()
+            for end_name in network_output_node_name:
+                paths = find_all_paths(network, graph, name, end_name)
+                if len(paths) != 0:
+                    convnode_set.add(name)
+    output_tensor = []
+    for name in convnode_set:
+        node = network.find_node_by_name(name)
+        output_tensor.append(node.get_output(0))
+    return output_tensor
+
 
 @adapt_func
 def add_detect(args):
+    # network_output_tensor = [network.get_output(i) for i in range(network.get_output_count())]
+    
+    # if args.__network__.get_output(0).get_producer().get_node_type() == "IConvNode":
+    #     feat_tensor = [args.__network__.get_output(i) for i in range(args.__network__.get_output_count())]
+    # else:
+    feat_tensor = find_conv_feat(args.__network__)
+    feat_tensor = sorted(feat_tensor, key = lambda x:np.prod(x.get_dimension().GetDims()), reverse=True)
+    for tensor in feat_tensor:
+        print("feature tensor shape: ",tensor.get_dimension())
+
     output_tensors = []
-    for i in args.detect_order:
-        tensor = args.__network__.get_output(i)
+    for i, tensor in enumerate(feat_tensor):
+        if args.detect_algo == mm.IDetectionOutputAlgo.YOLOV5:
+            sigmoid_node = args.__network__.add_i_activation_node(tensor, activation_type=mm.IActivation.SIGMOID)
+            tensor = sigmoid_node.get_output(0)        
         if args.detect_add_permute_node:
             dim = mm.Dims([len(args.detect_perms)])
             perms = np.array(args.detect_perms, dtype=np.int32)

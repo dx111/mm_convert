@@ -1,0 +1,15 @@
+mm_convert \
+    -f onnx \
+    --model ../cnbox_resource/models/onnx_yolov5_v6.1/yolov5x.onnx \
+    --output_model pytorch_yolov5m_v5_model \
+    --archs mtp_372.41 \
+    --input_shapes 1,3,640,640 \
+    --input_as_nhwc true \
+    --insert_bn true \
+    --precision qint8_mixed_float16 \
+    --image_color rgb \
+    --image_scale 1/255.0,1/255.0,1/255.0 \
+    --add_detect true \
+    --detect_bias 10,13,16,30,33,23,30,61,62,45,59,119,116,90,156,198,373,326 \
+    --detect_image_shape 640,640 \
+    --detect_algo yolov5 
