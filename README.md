@@ -2,14 +2,18 @@
 - [convert\_to\_mm](#convert_to_mm)
   - [安装](#安装)
   - [快速开始](#快速开始)
-  - [模型性能优化](#模型性能优化)
-    - [模型固定shape](#模型固定shape)
-  - [mm\_convert参数介绍](#mm_convert参数介绍)
-    - [通用参数](#通用参数)
-      - [-f(--framework) 原模型框架](#-f--framework-原模型框架)
-      - [-m(--model) 原模型](#-m--model-原模型)
-      - [-o(--output\_model) 输出的mm模型名](#-o--output_model-输出的mm模型名)
-      - [--input\_shapes 输出的shape](#--input_shapes-输出的shape)
+  - [参数介绍](#参数介绍)
+    - [-f(--framework) 原模型框架](#-f--framework-原模型框架)
+    - [-m(--model) 原模型](#-m--model-原模型)
+    - [-o(--output\_model) 输出的mm模型名](#-o--output_model-输出的mm模型名)
+    - [--input\_shapes 输入的shape](#--input_shapes-输入的shape)
+    - [--archs 设置模型运行的设备](#--archs-设置模型运行的设备)
+    - [--precision 设置精度和量化](#--precision-设置精度和量化)
+    - [--input\_as\_nhwc --output\_as\_nhwc 改变输入和输出布局](#--input_as_nhwc---output_as_nhwc-改变输入和输出布局)
+    - [--insert\_bn](#--insert_bn)
+    - [--model\_swapBR 交换模型的BR通道(rgb-\>bgr bgr-\>rgb)](#--model_swapbr-交换模型的br通道rgb-bgr-bgr-rgb)
+    - [--print\_ir 调试参数](#--print_ir-调试参数)
+    - [添加目标检测大算子](#添加目标检测大算子)
 
 
 ## 安装
@@ -18,45 +22,42 @@ pip install mm_convert
 ```
 
 ## 快速开始
+
 caffe模型转mm
 ```bash
 mm_convert \
---framework caffe \
---proto resnet50.prototxt \
---model resnet50.caffemodel \
---output_model caffe_resnet50_model
+    --framework caffe \
+    --proto resnet50.prototxt \
+    --model resnet50.caffemodel \
+    --output_model caffe_resnet50_model
 ```
 onnx模型转mm
 ```bash
 mm_convert \
--f onnx \
---model densenet-12.onnx \
---output_model onnx_densenet121_model
+    -f onnx \
+    --model densenet-12.onnx \
+    --output_model onnx_densenet121_model
 ```
 pytorch模型转mm
 ```bash
 mm_convert \
--f pt \
---model resnet50_jit.pt \
---output_model pt_resnet50_model
+    -f pt \
+    --model resnet50_jit.pt \
+    --output_model pt_resnet50_model
 ```
 tensorflow pb模型转mm
 ```bash
 mm_convert \
--f tf \
---model resnet50_v1.pb \
---output_model pt_resnet50_model \
---tf_graphdef_inputs input:0 \
---tf_graphdef_outputs resnet_v1_50/predictions/Softmax:0
+    -f tf \
+    --model resnet50_v1.pb \
+    --output_model pt_resnet50_model \
+    --tf_graphdef_inputs input:0 \
+    --tf_graphdef_outputs resnet_v1_50/predictions/Softmax:0
 ```
+⚠注意：此方法生成的模型，性能不能达到最佳
 
-## 模型性能优化
-### 模型固定shape
-
-
-## mm_convert参数介绍
-### 通用参数
-#### -f(--framework) 原模型框架
+## 参数介绍
+### -f(--framework) 原模型框架
 原模型的框架，caffe，onnx，pytorch，tensorflow，pytorch可以使用简写pt，tensorflow可以使用简写tf
 example:
 ```bash
@@ -66,7 +67,7 @@ example:
 -f tf
 ```
 
-#### -m(--model) 原模型
+### -m(--model) 原模型
 原模型的模型文件，对于不同的框架，指代的文件不同,对于caffe，还需要指定--proto
 ```bash
 # for caffe
@@ -78,11 +79,28 @@ example:
 # for tensorflow
 -m resnet50.pb
 ```
-#### -o(--output_model) 输出的mm模型名
-#### --input_shapes 输出的shape
+### -o(--output_model) 输出的mm模型名
 
+### --input_shapes 输入的shape
+设置网络input_shape，会自动设置网络的输入shape不可变，大幅提升网络的性能，如需生成可变模型，请设置graph_shape_mutable=true    
 
-<!-- ### archs
+指定输入1的shape是1,3,224,224
+```bash
+--input_shapes 1,3,224,224
+```
+
+指定输入1的shape是1,128, 输入2的shape是1,256，输入3的shape是1,123
+```bash
+--input_shapes 1,128 1,256 1,123
+```
+
+指定输入1的shape是1,3,224,224，并指定输入shape可变
+```bash
+--input_shapes 1,3,224,224 \
+--graph_shape_mutable true
+```
+
+### --archs 设置模型运行的设备
 通过指定archs，指定生成mlu370或者3226的模型，并指定多核优化,使用方法     
 指定生成3226的模型
 ```bash
@@ -105,26 +123,8 @@ example:
 --archs mtp_322 mtp_372:6,8
 ```
 对于3226(但核)，无须设置多核优化，对于370-s4(6核)，建议设置mtp_372:6，对于370-s4(8核)，建议设置mtp_372:8
-### input_shapes
-设置网络input_shape，会自动设置网络的输入shape不可变，大幅提升网络的性能，如需生成可变模型，请设置graph_shape_mutable=true    
 
-指定输入1的shape是1,3,224,224
-```bash
---input_shapes 1,3,224,224
-```
-
-指定输入1的shape是1,128, 输入2的shape是1,256，输入3的shape是1,123
-```bash
---input_shapes 1,128 1,256 1,123
-```
-
-指定输入1的shape是1,3,224,224，并指定输入shape可变
-```bash
---input_shapes 1,3,224,224 \
---graph_shape_mutable true
-```
-
-### 设置精度和量化
+### --precision 设置精度和量化
 
 | 精度 | 介绍 |
 | ------ | ------ |
@@ -178,7 +178,7 @@ example:
 --image_scale 1.0,1.0,1.0 1/255.0,1/255.0,1/255.0
 ```
 
-### 改变输入和输出布局
+### --input_as_nhwc --output_as_nhwc 改变输入和输出布局
 图片加载后一般的数据格式是(h,w,c)，增加batch后是(n,h,w,c),对于网络的输入是(n,c,h,w),图片需要transpose(n,h,w,c)->(n,c,h,w)后，才能进行推理，通过设置参数input_as_nhwc，将网络的输入转变为nhwc后，可免去图片的transpose      
 
 将输入1从nchw改成nhwc
@@ -196,7 +196,7 @@ example:
 --output_as_nhwc false true
 ```
 
-### insert_bn
+### --insert_bn
 对于首层是conv的网络，可以设置insert_bn，代替预处理中的归一化操作，设置insert_bn之后，无须再做减均值除标准差的归一化操作，输入的数据类型也会变成uint8(fp32->uint8,减少3/4的数据量)，注意此参数的开启依赖与正确的设置了 image_mean,image_std,image_scale参数，此参数在精度和量化校准提及，不在赘述    
 输入1开启insert_bn
 ```bash
@@ -206,6 +206,18 @@ example:
 输入1不变，输入2开启insert_bn
 ```bash
 --insert_bn false true \
+```
+
+### --model_swapBR 交换模型的BR通道(rgb->bgr bgr->rgb)
+对于一些已经训练好的模型，训练时采用的bgr或者rgb的数据，推理时图片需要对图片，进行rbg2bgr或者bgr2rgb的转换，此转换浪费了时间，可对模型进行更改，交换权值中的B,R通道，使其接收另一种颜色空间的图片
+```bash
+--model_swapBR true
+```
+
+### --print_ir 调试参数
+保存模型build期间，图的结构
+```bash
+--print_ir true
 ```
 
 ### 添加目标检测大算子
@@ -232,7 +244,7 @@ tensorflow的pb格式模型，可以指定参数--tf_graphdef_outputs conv_lbbox
 3. pytorch 模型
 pytorch模型需要在jit.trace模型的时候，在代码中修改，将检测层的的输入直接return，不经过检测层
 
-#### detect 参数
+参数
 1.detect_add_permute_node    
 detect层需要nhwc的输入，当特征图是nchw时(caffe, pytorch),需要添加此参数，将特征图permute为nhwc    
 
@@ -256,15 +268,3 @@ yolov3的anchor值设置,此值为默认值
 
 7.detect_image_shape    
 目标检测图片的尺寸,未设置会根据网络的输入0和参数image_size进行推到，无法推导则设置为416,416
-
-### bgr模型转rgb模型
-对于一些已经训练好的模型，训练时采用的bgr或者rgb的数据，推理时图片需要对图片，进行rbg2bgr或者bgr2rgb的转换，此转换浪费了时间，可对模型进行更改，交换权值中的B,R通道，使其接收另一种颜色空间的图片
-```bash
---model_swapBR true
-```
-
-### 调试参数
-保存模型build期间，图的结构
-```bash
---print_ir true
-``` -->
