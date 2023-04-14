@@ -10,7 +10,7 @@
     - [--archs 设置模型运行的设备](#--archs-设置模型运行的设备)
     - [--precision 设置精度和量化](#--precision-设置精度和量化)
     - [--input\_as\_nhwc --output\_as\_nhwc 改变输入和输出布局](#--input_as_nhwc---output_as_nhwc-改变输入和输出布局)
-    - [--insert\_bn](#--insert_bn)
+    - [--insert\_bn 首层做数据归一化](#--insert_bn-首层做数据归一化)
     - [--model\_swapBR 交换模型的BR通道(rgb-\>bgr bgr-\>rgb)](#--model_swapbr-交换模型的br通道rgb-bgr-bgr-rgb)
     - [--print\_ir 调试参数](#--print_ir-调试参数)
     - [添加目标检测大算子](#添加目标检测大算子)
@@ -196,7 +196,7 @@ example:
 --output_as_nhwc false true
 ```
 
-### --insert_bn
+### --insert_bn 首层做数据归一化
 对于首层是conv的网络，可以设置insert_bn，代替预处理中的归一化操作，设置insert_bn之后，无须再做减均值除标准差的归一化操作，输入的数据类型也会变成uint8(fp32->uint8,减少3/4的数据量)，注意此参数的开启依赖与正确的设置了 image_mean,image_std,image_scale参数，此参数在精度和量化校准提及，不在赘述    
 输入1开启insert_bn
 ```bash
