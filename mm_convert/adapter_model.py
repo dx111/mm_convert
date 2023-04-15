@@ -1,9 +1,7 @@
 import numpy as np
 import magicmind.python.runtime as mm
-from .utils import Register
+from mm_convert.utils import get_obj
 
-adapt_func = Register()
-    
 def find_all_paths(network, graph, start, end, path=[]):
     path = path + [start]
     if start == end:
@@ -52,14 +50,7 @@ def find_conv_feat(network):
         output_tensor.append(node.get_output(0))
     return output_tensor
 
-
-@adapt_func
 def add_detect(args):
-    # network_output_tensor = [network.get_output(i) for i in range(network.get_output_count())]
-    
-    # if args.__network__.get_output(0).get_producer().get_node_type() == "IConvNode":
-    #     feat_tensor = [args.__network__.get_output(i) for i in range(args.__network__.get_output_count())]
-    # else:
     feat_tensor = find_conv_feat(args.__network__)
     feat_tensor = sorted(feat_tensor, key = lambda x:np.prod(x.get_dimension().GetDims()), reverse=True)
     for tensor in feat_tensor:
@@ -118,7 +109,6 @@ def add_detect(args):
     for i in range(detection_output_count):
         args.__network__.mark_output(detect_out.get_output(i))
 
-@adapt_func
 def model_swapBR(args):
     # todo support multi input 
     input_name = args.__network__.get_input(0).get_tensor_name()
@@ -129,13 +119,11 @@ def model_swapBR(args):
                 input_ops.append(node)
     for node in input_ops:
         if node.get_node_type() == "IConvNode":
-            weight_tensor = node.get_input(1);
+            weight_tensor = node.get_input(1)
             const_node = args.__network__.add_i_const_node(mm.DataType.INT32, mm.Dims([1]), 1)
             split_node = args.__network__.add_i_split_node(weight_tensor, const_node.get_output(0), 3)
             split_node_output = [split_node.get_output(x) for x in [2,1,0]]
             concat_node = args.__network__.add_i_concat_node(const_node.get_output(0), split_node_output)
             node.update_input(1, concat_node.get_output(0))
         else:
-            # todo support other node type
-            # node.update_input(0, new_tensor)
-            pass
+            raise Exception("model_swapBR only support first node is conv.")

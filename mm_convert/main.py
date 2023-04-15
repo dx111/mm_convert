@@ -3,11 +3,12 @@ import numpy as np
 import json
 import magicmind.python.runtime as mm
 import magicmind.python.runtime.parser
-from .utils import Calibrator
-from .utils import print_error_and_exit
-from .options import parser
-from .adapter_model import adapt_func
-from .dataloader import dataload_func
+from mm_convert.utils import Calibrator
+from mm_convert.utils import print_error_and_exit
+from mm_convert.options import parser
+from mm_convert.adapter_model import add_detect
+from mm_convert.adapter_model import model_swapBR
+from mm_convert.dataloader import dataload_func
 
 def parse_network(args):
     network = mm.Network()
@@ -95,25 +96,26 @@ def parse_build_config(args):
     assert build_config.parse_from_string(json.dumps(config)).ok()
     return build_config
 
-def check_exists(path):
-    if not os.path.exists(path):
-        raise BaseException(f"invalid model path, {path} not exists.")
-
 def args_check(args):
     if args.framework == "caffe":
         if args.model is None:
             print_error_and_exit("error: the following arguments are required: --model xxxx.caffemodel") 
         if args.proto is None:
             print_error_and_exit("error: the following arguments are required: --proto xxxx.prototxt")
-        check_exists(args.model)
-        check_exists(args.proto)
-
-    if args.framework == "onnx" and args.model is None:
-        print_error_and_exit("error: the following arguments are required: --model xxxx.onnx")
-        check_exists(args.model)
-    
-    if args.framework == "pytorch" and args.model is None:
-        print_error_and_exit("error: the following arguments are required: --model xxxx.pt")
+        if not os.path.exists(args.model):
+            print_error_and_exit(f"invalid model path, {args.model} not exists.")
+        if not os.path.exists(args.proto):
+            print_error_and_exit(f"invalid model path, {args.proto} not exists.")
+    if args.framework == "onnx":
+        if args.model is None:
+            print_error_and_exit("error: the following arguments are required: --model xxxx.onnx")
+        if not os.path.exists(args.model):
+            print_error_and_exit(f"invalid model path, {args.model} not exists.")
+    if args.framework == "pytorch":
+        if args.model is None:
+            print_error_and_exit("error: the following arguments are required: --model xxxx.pt")
+        if not os.path.exists(args.model):
+            print_error_and_exit(f"invalid model path, {args.model} not exists.")
 
     if args.framework == "tensorflow":
         if args.tf_model_type == "tf-graphdef-file":
@@ -121,27 +123,27 @@ def args_check(args):
                 print_error_and_exit("error: the following arguments are required: --tf_graphdef_inputs input_name1 input_name2")
             if args.tf_graphdef_outputs is  None:
                 print_error_and_exit("error: the following arguments are required: --tf_graphdef_outputs output_name1 output_name2")
-        check_exists(args.model)
+        if not os.path.exists(args.model):
+            print_error_and_exit(f"invalid model path, {args.model} not exists.")
     
     # set default output model name
-    if not args.output_model:
+    if args.output_model is None:
         setattr(args, "output_model", os.path.split(args.model)[-1] + ".mm")
 
-    
 def main():
     args = parser.parse_args()
     args_check(args)
     parse_network(args)
-    if args.model_swapBR:
-        model_swapBR(args)
     if args.input_shapes:
         for i in range(len(args.input_shapes)):
             shape = mm.Dims(args.input_shapes[i])
             args.__network__.get_input(i).set_dimension(shape)
         if args.graph_shape_mutable is None:
             setattr(args, "graph_shape_mutable", False)
+    if args.model_swapBR:
+        model_swapBR(args)
     if args.add_detect:
-        adapt_func["add_detect"](args)
+        add_detect(args)
     build_config = parse_build_config(args)
     if args.precision and args.precision not in ["force_float16", "force_float32"]:
         calib_data = dataload_func[args.load_data_func](args)

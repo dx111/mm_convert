@@ -1,2 +1,2 @@
-from .mm_convert import main
-from .utils import Record
+from mm_convert.main import main
+from mm_convert.utils import Record

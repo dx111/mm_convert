@@ -5,10 +5,10 @@ from glob import glob
 import pickle
 import magicmind.python.runtime as mm
 from magicmind.python.common.types import get_numpy_dtype_by_datatype
-from .utils import CalibData
-from .utils import Register
-from .utils import get_obj
-from .utils import print_error_and_exit
+from mm_convert.utils import CalibData
+from mm_convert.utils import Register
+from mm_convert.utils import get_obj
+from mm_convert.utils import print_error_and_exit
 
 dataload_func = Register()
 
