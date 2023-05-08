@@ -46,7 +46,6 @@ def get_obj(idx, objs):
     return obj
 
 def parse_build_config(args):
-    build_config = mm.BuilderConfig()
     if args.costom_build_config:
         with open(args.costom_build_config, "r") as f:
             config = json.loads(f.read())
@@ -93,8 +92,7 @@ def parse_build_config(args):
     print("=========== build config ===================")
     print(config)
     print("============================================")
-    assert build_config.parse_from_string(json.dumps(config)).ok()
-    return build_config
+    return config
 
 def args_check(args):
     if args.framework == "caffe":
@@ -125,16 +123,20 @@ def args_check(args):
                 print_error_and_exit("error: the following arguments are required: --tf_graphdef_outputs output_name1 output_name2")
         if not os.path.exists(args.model):
             print_error_and_exit(f"invalid model path, {args.model} not exists.")
-    
     # set default output model name
     if args.output_model is None:
         setattr(args, "output_model", os.path.split(args.model)[-1] + ".mm")
-
+    # set batch size
+    if args.batch_size is None and args.input_shapes:
+        setattr(args, "batch_size", args.input_shapes[0][0])
+    
 def main():
+    twis_info = dict()
     args = parser.parse_args()
     args_check(args)
     parse_network(args)
     if args.input_shapes:
+        twis_info["input_shapes"] = args.input_shapes
         for i in range(len(args.input_shapes)):
             shape = mm.Dims(args.input_shapes[i])
             args.__network__.get_input(i).set_dimension(shape)
@@ -144,7 +146,11 @@ def main():
         model_swapBR(args)
     if args.add_detect:
         add_detect(args)
-    build_config = parse_build_config(args)
+    build_config = mm.BuilderConfig()
+    config = parse_build_config(args)
+    twis_info["build_config"] = config
+    json_data = json.dumps(config)
+    assert build_config.parse_from_string(json_data).ok()
     if args.precision and args.precision not in ["force_float16", "force_float32"]:
         calib_data = dataload_func[args.load_data_func](args)
         calibrator = Calibrator(calib_data, mm.QuantizationAlgorithm.LINEAR_ALGORITHM)
@@ -157,6 +163,8 @@ def main():
     model = builder.build_model("mm_model", args.__network__, build_config)
     assert model != None
     model.serialize_to_file(args.output_model)
+    with open(f'{args.output_model}_twins.json', 'w') as f:
+        json.dump(twis_info, f)
     print("Generate model done, model save to %s" % args.output_model)
 
 if __name__ == "__main__":

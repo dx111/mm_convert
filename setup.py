@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 setup(
     name='mm_convert',
-    version='0.0.2',
+    version='0.0.3',
     packages=find_packages(),
     zip_safe = False,
     entry_points={
