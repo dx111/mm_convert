@@ -1,21 +1,22 @@
 ---
 layout: default
 title: 参数介绍
-nav_order: 2
+nav_order: 3
 description: "参数介绍"
 permalink: /overview
 ---
 
 
 ## 参数介绍
-| 通用         | 默认值   | 示例     | 说明 |
-| ----         | ----    | ----  | ---- |
-| [framework](#framework)    | None    | --framework onnx | 原模型的框架                 |
-| [model](#model)    | None    | --model xxx_model | 原模型模型文件                          |
-| [proto](#proto)    | None    | --proto xxx.prototxt | caffe的prototxt文件 |
-| [output_model](#output_model)    | None    | --output_model model.mm | 参数为空时，生成与原模型名相同，后缀增加.mm的模型 |
-| [archs](#archs)    | None    | --archs mtp_372 | 设置模型运行的设备 |
-| [input_shapes](#input_shapes)    | None    | --input_shapes 1,3,224,224 | 设置模型的输入形状 |
+
+| 通用                         | 默认值   | 示例     | 说明 |
+|:-----------------------------|:--------- |:---------  | :---- |
+| [framework](#framework)      | None    | --framework onnx | 原模型的框架                 |
+| [model](#model)              | None    | --model xxx_model | 原模型模型文件                          |
+| [proto](#proto)              | None    | --proto xxx.prototxt | caffe的prototxt文件 |
+| [output_model](#output_model)| None    | --output_model model.mm | 参数为空时，生成与原模型名相同，后缀增加.mm的模型 |
+| [archs](#archs)              | None    | --archs mtp_372 | 设置模型运行的设备 |
+| [input_shapes](#input_shapes)| None    | --input_shapes 1,3,224,224 | 设置模型的输入形状 |
 | [graph_shape_mutable](#graph_shape_mutable)    | None    | --graph_shape_mutable true | 输入支持可变 |
 
 
