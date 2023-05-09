@@ -3,7 +3,7 @@ layout: default
 title: Home
 nav_order: 2
 description: "Home"
-permalink: /doc/overview
+permalink: /overview
 ---
 
 
