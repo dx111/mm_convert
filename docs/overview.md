@@ -3,7 +3,7 @@ layout: default
 title: 参数介绍
 nav_order: 3
 description: "参数介绍"
-permalink: /overview
+permalink: /params
 ---
 
 
