@@ -7,9 +7,7 @@ permalink: /params/debug
 ---
 
 
-
-
-### print_ir
+# --print_ir
 保存模型build期间，图的结构
 ```bash
 --print_ir true

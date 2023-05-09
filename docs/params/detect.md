@@ -6,7 +6,7 @@ nav_order: 4
 permalink: /params/detect
 ---
 
-### add_detect
+# --add_detect
 对于yolo ssd 之类的网络，使用大算子代替原生的检测层，可大幅提升性能    
 yolov3 检测层的配置，
 ```bash
