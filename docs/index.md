@@ -1,10 +1,11 @@
 ---
 layout: default
-title: Home
+title: 主页
 nav_order: 1
-description: "Home"
+description: "主页"
 permalink: /
 ---
+
 
 ## 安装
 ```bash
