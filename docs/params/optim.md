@@ -3,6 +3,7 @@ layout: default
 title: 模型优化
 parent: 参数介绍
 nav_order: 3
+permalink: /params/optim
 ---
 
 

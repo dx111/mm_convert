@@ -3,6 +3,7 @@ layout: default
 title: 精度与量化
 parent: 参数介绍
 nav_order: 2
+permalink: /params/precision
 ---
 
 

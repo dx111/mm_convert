@@ -3,6 +3,7 @@ layout: default
 title: 通用参数
 parent: 参数介绍
 nav_order: 1
+permalink: /params/common
 ---
 
 ### framework

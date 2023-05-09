@@ -3,6 +3,7 @@ layout: default
 title: 目标检测
 parent: 参数介绍
 nav_order: 4
+permalink: /params/detect
 ---
 
 ### add_detect

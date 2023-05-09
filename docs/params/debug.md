@@ -3,6 +3,7 @@ layout: default
 title: 调试
 parent: 参数介绍
 nav_order: 5
+permalink: /params/debug
 ---
 
 
