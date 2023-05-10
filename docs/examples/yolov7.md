@@ -57,7 +57,7 @@ python infer.py
 ```
 会在当前目录下，保存推理cpp推理的结果
 ![cpp推理结果1](cpp_res_0.jpg)
-![cpp推理结果2](cpp_res_0.jpg)
+![cpp推理结果2](cpp_res_1.jpg)
 
 ## 注意事项：
 1. 该脚本使用了yolov5的目标检测大算子替换原生的检测层，如果不需要，设置--add_detect false
