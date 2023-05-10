@@ -8,7 +8,7 @@ permalink: /examples/yolov7
 
 # yolov7
 
-[示例代码](https://github.com/dx111/mm_convert/tree/main/examples/onnx_yolov7){: .btn .btn-blue }
+[查看代码](https://github.com/dx111/mm_convert/tree/main/examples/onnx_yolov7){: .btn .btn-blue }
 
 1 使用官方仓库的的python程序将yolov7转为onnx模型        
 ```bash
