@@ -18,7 +18,19 @@ python export.py --weights yolov7-tiny.pt --grid --end2end --simplify \
 此处需要去掉--simplify参数，因为此参数会固定输入的形状，无法生成多batch模型。
 
 2 执行转换     
-请根据实际情况修改参数，此处生成的是2batch的模型
+请根据实际情况修改参数，此处生成的是2batch的模型     
+此处开启了很多优化，因此参数较多:
+1. --archs mtp_372.41    指定使用370设备
+2. --input_shapes 2,3,640,640    执行输入的shape是2,3,640,640
+3. --input_as_nhwc true   将输入从nchw转为nhwc
+4. --insert_bn true 首层做归一化
+5. --precision qint8_mixed_float16 设置精度
+6. --image_color rgb 设置输入图片为rgb格式 【量化】
+7. --image_scale 设置输入的scale【量化】【insert_bn】
+8. --add_detect true 添加目标检测大算子
+9. --detect_bias 12,16,19,36,40,28,36,75,76,55,72,146,142,110,192,243,459,401 设置anchor box
+10. --detect_image_shape 640,640 设置检测图的尺寸
+11. --detect_algo yolov5 设置检测算法为yolov5
 ```
 mm_convert \
     -f onnx \
@@ -36,6 +48,10 @@ mm_convert \
     --detect_image_shape 640,640 \
     --detect_algo yolov5
 ```
+请根据自身情况调整参数，可能会用到的参数： 
+1. --detect_conf 0.3 目标检测的阈值
+2. --detect_nms 0.45 目标检测iou阈值
+3. --detect_num_class 80 目标检测的类别数
 
 ## python 推理
 下载仓库中的infer.py文件和data目录下的两张图片，执行推理
