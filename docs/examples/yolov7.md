@@ -8,7 +8,7 @@ permalink: /examples/yolov7
 
 # yolov7
 
-[代码仓库](https://github.com/dx111/mm_convert/tree/main/examples/onnx_yolov7)
+[示例代码](https://github.com/dx111/mm_convert/tree/main/examples/onnx_yolov7){: .btn .btn-blue }
 
 1 使用官方仓库的的python程序将yolov7转为onnx模型        
 ```bash
@@ -42,7 +42,7 @@ mm_convert \
 ```
 python infer.py
 ```
-会在当前目录下，保存推理python推理的结果["python_result_0.jpg", "python_result_0.jpg"]
+会在当前目录下，保存推理python推理的结果
 ![python推理结果1](python_result_0.jpg)
 ![python推理结果2](python_result_1.jpg)
 
@@ -55,7 +55,7 @@ python infer.py
 ```
 ./infer.bin
 ```
-会在当前目录下，保存推理python推理的结果["python_result_0.jpg", "python_result_0.jpg"]
+会在当前目录下，保存推理cpp推理的结果
 ![cpp推理结果1](cpp_res_0.jpg)
 ![cpp推理结果2](cpp_res_0.jpg)
 
