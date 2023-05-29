@@ -1,6 +1,6 @@
 mm_convert \
     --framework pytorch \
-    --model models/pytorch_crnn/crnn-jit.pt \
+    --model crnn-jit.pt \
     --output_model pt_crnn_model \
     --archs mtp_372.41 \
     --input_shapes 1,1,32,100 \

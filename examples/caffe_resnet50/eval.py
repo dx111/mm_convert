@@ -2,7 +2,7 @@ import os
 import cv2
 import numpy as np
 from tqdm import tqdm
-from mm_infer import MMInfer
+from mm_convert.mm_infer import MMInfer
 
 def imagenet_dataset(imagenet_path = "../cnbox_resource/dataset/imagenet1000", 
                      val_txt = "../cnbox_resource/dataset/imagenet1000/imagenet_1000.txt", 
@@ -45,7 +45,7 @@ def preprocess_resnet_no_scale(image,
 
 
 if __name__ == "__main__":
-    model = MMInfer("caffe_resnet50_model",os.environ.get('REMOTE_IP', None))
+    model = MMInfer("caffe_resnet50_model")
     dataset = imagenet_dataset()
     top1_count = 0
     top5_count = 0

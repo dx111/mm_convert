@@ -8,7 +8,6 @@
 #include <cassert>
 
 size_t img_size[] = {640, 640};
-size_t batch_size = 2;
 std::string model_file = "yolov7.mm";
 std::vector<std::string> image_file_list{
     "./data/zidane.jpg",
@@ -48,6 +47,8 @@ int main()
     auto model = magicmind::CreateIModel();
     model->DeserializeFromFile(model_file.c_str());
 
+    size_t batch_size = model->GetInputDimension(0).GetDimValue(0);
+
     std::vector<cv::Mat> img_list;
     std::vector<cv::Mat> show_img_list;
     for(auto file: image_file_list){
@@ -55,7 +56,6 @@ int main()
         show_img_list.push_back(img.clone());
         img = process_img(img);
         img_list.push_back(img);
-
     }
 
     // 1 create queue
@@ -91,7 +91,7 @@ int main()
         assert(cnrtMalloc(&mlu_addr_ptr, tensor->GetSize()) == cnrtSuccess);
         assert(tensor->SetData(mlu_addr_ptr).ok());
     }
-    
+
     // 6. copy in
     size_t size_per_batch = input_tensors[0]->GetSize() / batch_size;
     for(int i = 0 ; i < img_list.size() ; ++i){

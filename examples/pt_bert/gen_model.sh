@@ -1,6 +1,6 @@
 mm_convert \
     --framework pytorch \
-    --model models/pytorch_bert/pt_bert_traced.pt \
+    --model pt_bert_traced.pt \
     --output_model pt_bert_model \
     --archs mtp_372.41 \
     --input_shapes 1,128 1,128 1,128 \

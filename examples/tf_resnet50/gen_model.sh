@@ -1,9 +1,8 @@
-wget -c https://github.com/dx111/models/raw/main/tf_resnet50v1/resnet50_v1.pb \ 
-    -P models/tf_resnet50v1
+wget -nc -c https://github.com/dx111/models/raw/main/tf_resnet50v1/resnet50_v1.pb
 
 mm_convert \
     --framework tensorflow \
-    --model models/tf_resnet50v1/resnet50_v1.pb \
+    --model resnet50_v1.pb \
     --output_model tf_resnet50_model \
     --archs mtp_372.41 \
     --tf_graphdef_inputs input:0 \

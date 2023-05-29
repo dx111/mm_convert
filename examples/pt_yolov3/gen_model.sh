@@ -1,6 +1,6 @@
 mm_convert \
     --framework pytorch \
-    --model models/yolov3_traced.pt \
+    --model yolov3_traced.pt \
     --output_model pytorch_yolov3_model \
     --archs mtp_372.41 \
     --input_shapes 16,3,416,416 \

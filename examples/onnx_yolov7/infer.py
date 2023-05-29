@@ -3,6 +3,7 @@ import numpy as np
 import magicmind.python.runtime as mm
 import cv2
 import math
+from mm_convert.tools.mm_infer import MMInfer
 
 model_file = "yolov7.mm"
 img_size = [640, 640]
@@ -27,49 +28,6 @@ def preprocess(img, dst_shape = [640, 640], stride = 32):
     img = cv2.copyMakeBorder(img, pad_t, pad_b, pad_l, pad_r, cv2.BORDER_CONSTANT, value=(0,0,0))
     return img, ratio
 
-class MMInfer:
-    def __init__(self, model_file, remote_ip = None) -> None:
-        if remote_ip:
-            sess = mm.remote.IRpcSession.rpc_connect(remote_ip + ":9009")
-            self.dev = sess.get_device_by_id(0)
-            self.dev.active()
-            self.model = sess.create_model()
-        else:
-            self.dev = mm.Device()
-            self.dev.id = 0
-            assert self.dev.active().ok()
-            self.model = mm.Model()
-        self.queue = self.dev.create_queue()
-        assert self.queue != None
-        
-        self.model.deserialize_from_file(model_file)    
-        econfig = mm.Model.EngineConfig()
-        econfig.device_type = "MLU"
-        self.engine = self.model.create_i_engine(econfig)
-        assert self.engine != None, "Failed to create engine"
-        self.context = self.engine.create_i_context()
-        self.inputs = self.context.create_inputs()
-
-    def predict(self, datas:List[np.ndarray] or np.ndarray) -> List[np.ndarray]:
-        outputs = []
-        if isinstance(datas, np.ndarray):
-            datas = [datas]
-        for i, data in enumerate(datas):
-            if data.shape != self.inputs[i].shape:
-                raise BaseException(f"shape not match, data shpae {data.shape}, network input shape {self.inputs[i].shape}")
-            self.inputs[i].from_numpy(data)
-            if isinstance(self.dev, mm.resources.Device):
-                self.inputs[0].to(self.dev)
-        status = self.context.enqueue(self.inputs, outputs, self.queue)
-        if not status.ok():
-            raise BaseException("enqueue failed")
-  
-        status = self.queue.sync()
-        if not status.ok():
-            raise BaseException("sync queue failed")
-        return [x.asnumpy() for x in outputs]
-    
-    
 model = MMInfer(model_file)
 img_list = []
 show_img_list = []

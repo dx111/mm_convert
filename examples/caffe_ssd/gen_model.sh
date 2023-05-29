@@ -1,13 +1,11 @@
-wget -c https://github.com/dx111/models/raw/main/caffe_ssd/ssd.caffemodel \
-   -P models/caffe_ssd
+wget -nc -c https://github.com/dx111/models/raw/main/caffe_ssd/ssd.caffemodel
 
-wget -c https://github.com/dx111/models/raw/main/caffe_ssd/ssd.prototxt \
-   -P models/caffe_ssd
+wget -nc -c https://github.com/dx111/models/raw/main/caffe_ssd/ssd.prototxt
 
 mm_convert \
     --framework caffe \
-    --proto models/caffe_ssd/ssd.prototxt \
-    --model models/caffe_ssd/ssd.caffemodel \
+    --proto ssd.prototxt \
+    --model ssd.caffemodel \
     --output_model caffe_ssd_model \
     --archs mtp_372 \
     --input_shapes 1,3,300,300 \

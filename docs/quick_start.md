@@ -25,15 +25,14 @@ mm_convert \
 ```bash
 mm_convert \
     -f onnx \
-    --model densenet-12.onnx \
-    --output_model onnx_densenet121_model
+    -m densenet-12.onnx \
+
 ```
 ### pytorch模型转mm
 ```bash
 mm_convert \
     -f pt \
-    --model resnet50_jit.pt \
-    --output_model pt_resnet50_model
+    -m resnet50_jit.pt 
 ```
 ### tensorflow pb模型转mm
 ```bash

@@ -1,5 +1,7 @@
-wget -c https://github.com/dx111/models/raw/main/onnx_resnet/resnet50-v1-7.onnx \
-    -P models/onnx_resnet
+#!/bin/bash
+set -e
+
+wget -nc -c https://github.com/dx111/models/raw/main/onnx_resnet/resnet50-v1-7.onnx
 
 mm_convert \
     -f onnx \
@@ -16,3 +18,9 @@ mm_convert \
     --image_scale 1/255.0,1/255.0,1/255.0
 
 # python tests/onnx_resnet50.py
+
+
+# perf_info=$(mm_run --magicmind_model onnx_resnet50_model)
+# fps=`echo -e "$perf_info" | grep "Throughput (qps):"`
+# fps=`eval echo "${fps:18}"`
+# echo "fps: ${fps}"

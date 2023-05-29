@@ -1,11 +1,10 @@
-wget -c https://github.com/dx111/models/raw/main/onnx_yolop/yolop-640-640.onnx \
-    -P models/onnx_yolop
+wget -nc -c https://github.com/dx111/models/raw/main/onnx_yolop/yolop-640-640.onnx
 
 mm_convert \
     --framework onnx \
-    --model models/onnx_yolop/yolop-640-640.onnx \
+    --model yolop-640-640.onnx \
     --output_model onnx_resnet50_model \
-    --archs tp_322 mtp_372.41 \
+    --archs mtp_372 \
     --input_shapes 1,3,640,640 \
     --input_as_nhwc true \
     --insert_bn true \

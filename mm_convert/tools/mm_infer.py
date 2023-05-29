@@ -1,9 +1,11 @@
 from typing import List
 import numpy as np
+import os
 import magicmind.python.runtime as mm
 
 class MMInfer:
-    def __init__(self, model_file, remote_ip = None) -> None:
+    def __init__(self, model_file) -> None:
+        remote_ip = os.environ.get('REMOTE_IP', None)
         if remote_ip:
             sess = mm.remote.IRpcSession.rpc_connect(remote_ip + ":9009")
             self.dev = sess.get_device_by_id(0)
@@ -24,10 +26,19 @@ class MMInfer:
         assert self.engine != None, "Failed to create engine"
         self.context = self.engine.create_i_context()
         self.inputs = self.context.create_inputs()
+    
+    def set_input_shape(self, i , shape):
+        self.inputs[i].resize(shape)
 
-    def predict(self, datas:List[np.ndarray]) -> List[np.ndarray]:
+    def predict(self, datas:List[np.ndarray] or np.ndarray) -> List[np.ndarray]:
         outputs = []
+        # .shape = (1,18)
+        # setattr(self.inputs[0], "shape", )
+        if isinstance(datas, np.ndarray):
+            datas = [datas]
         for i, data in enumerate(datas):
+            if self.inputs[i].shape == tuple():
+                continue
             if data.shape != self.inputs[i].shape:
                 raise BaseException(f"shape not match, data shpae {data.shape}, network input shape {self.inputs[i].shape}")
             self.inputs[i].from_numpy(data)

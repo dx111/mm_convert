@@ -1,14 +1,24 @@
 import os
 import numpy as np
 import json
+import sys
+from typing import List
+import logging
 import magicmind.python.runtime as mm
 import magicmind.python.runtime.parser
+from magicmind.python.common.types import get_numpy_dtype_by_datatype
 from mm_convert.utils import Calibrator
 from mm_convert.utils import print_error_and_exit
+from mm_convert.utils import Register
 from mm_convert.options import parser
 from mm_convert.adapter_model import add_detect
 from mm_convert.adapter_model import model_swapBR
+from mm_convert.utils import CalibData
 from mm_convert.dataloader import dataload_func
+
+logging.basicConfig(level=logging.NOTSET, format='%(asctime)s %(levelname)s %(message)s')
+
+adapter_func = Register()
 
 def parse_network(args):
     network = mm.Network()
@@ -89,9 +99,7 @@ def parse_build_config(args):
                 config["insert_bn_before_firstnode"][f"{idx}"] =  {"mean": _mean.tolist(), "var": _var.tolist()}
         if args.compute_determinism:
             config["compute_determinism"] = True
-    print("=========== build config ===================")
-    print(config)
-    print("============================================")
+    logging.info(f"build_config: {config}")
     return config
 
 def args_check(args):
@@ -129,8 +137,18 @@ def args_check(args):
     # set batch size
     if args.batch_size is None and args.input_shapes:
         setattr(args, "batch_size", args.input_shapes[0][0])
-    
+
+def convert_datas(datas, type):
+    for i in range(len(datas)):
+        if datas[i].dtype != type:
+            logging.warning(f"calibrate data type: {datas[i].dtype}, input type: {type}, convert to {type}")
+            datas[i] = datas[i].astype(type)
+    return datas
+
 def main():
+    if os.path.exists(os.path.join(os.getcwd(), "callback_func.py")):
+        sys.path.append(os.getcwd())
+        import callback_func
     twis_info = dict()
     args = parser.parse_args()
     args_check(args)
@@ -151,8 +169,20 @@ def main():
     twis_info["build_config"] = config
     json_data = json.dumps(config)
     assert build_config.parse_from_string(json_data).ok()
+    
+    for key in adapter_func.keys():
+        adapter_func[key](args)
+    
     if args.precision and args.precision not in ["force_float16", "force_float32"]:
-        calib_data = dataload_func[args.load_data_func](args)
+        datas = list(dataload_func[args.load_data_func](args))
+        input_types = [args.__network__.get_input(i).get_data_type() for i in range(args.__network__.get_input_count())]
+        input_types = [get_numpy_dtype_by_datatype(t) for t in input_types]
+        if isinstance(datas, list) and all(isinstance(sublist, list) and all(isinstance(arr, np.ndarray) for arr in sublist) for sublist in datas):
+            for idx in range(len(input_types)):
+                datas[idx] = convert_datas(datas[idx], input_types[i])
+            calib_data = [CalibData(x) for x in datas]
+        else:
+            print_error_and_exit("calib_data must be list[np.ndarray] or tuple[list[np.ndarray]]")
         calibrator = Calibrator(calib_data, mm.QuantizationAlgorithm.LINEAR_ALGORITHM)
         if args.remote_ip:
             remote_config = mm.RemoteConfig()
